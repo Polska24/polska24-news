@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Polska24 - Najnowsze wiadomości z Polski i świata</title>
-    <!-- تحسين محركات البحث (SEO) - تعديل 1 -->
+    <title>Polska24 - Najnowsze wiadomości automatycznie</title>
+    <!-- تحسين محركات البحث -->
     <meta name="description" content="Polska24 - niezależny portal informacyjny. Najnowsze wiadomości z Polski i świata, polityka, gospodarka, sport, technologia.">
     <meta name="keywords" content="Polska, wiadomości, newsy, informacje, polityka, gospodarka, sport, technologia">
     <meta name="author" content="Polska24">
@@ -12,7 +12,7 @@
     <meta property="og:description" content="Automatycznie aktualizowane wiadomości z Polski i świata.">
     <meta property="og:url" content="https://polska24.github.io/polska24-news/">
     <meta name="twitter:card" content="summary_large_image">
-    <!-- Favicon - تعديل 1 -->
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23dc1c1c'/><text x='50' y='70' font-size='70' text-anchor='middle' fill='white' font-weight='bold'>P24</text></svg>">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,7 +21,7 @@
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* الأنماط العامة */
+        /* ========== الأنماط العامة ========== */
         * {
             margin: 0;
             padding: 0;
@@ -43,7 +43,7 @@
             max-width: 1200px;
             margin: 0 auto;
         }
-        /* شريط التقدم - تعديل 1 */
+        /* شريط التقدم */
         #progressBar {
             position: fixed;
             top: 0;
@@ -75,6 +75,11 @@
             font-weight: 700;
             text-transform: uppercase;
             margin-right: 15px;
+        }
+        .breaking-ticker {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         /* الهيدر */
         .header {
@@ -127,7 +132,7 @@
             font-size: 14px;
             font-weight: 500;
         }
-        /* قائمة اللغات - تعديل 4 */
+        /* قائمة اللغات */
         .lang-dropdown {
             position: relative;
             display: inline-block;
@@ -252,6 +257,10 @@
             text-decoration: none;
             color: inherit;
         }
+        .featured-content p {
+            color: #555;
+            margin-bottom: 20px;
+        }
         .meta {
             display: flex;
             gap: 20px;
@@ -321,7 +330,17 @@
         .news-item h4 a:hover {
             color: #dc1c1c;
         }
-        /* عداد الزوار - تعديل 1 */
+        .news-item p {
+            color: #555;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+        }
+        .news-item .meta {
+            border: none;
+            padding: 0;
+            margin-top: 10px;
+        }
+        /* عداد الزوار */
         .visitor-counter {
             display: flex;
             gap: 15px;
@@ -331,7 +350,7 @@
             font-size: 14px;
             color: #666;
         }
-        /* زر العودة للأعلى - تعديل 1 */
+        /* زر العودة للأعلى */
         #backToTop {
             position: fixed;
             bottom: 100px;
@@ -352,7 +371,7 @@
         #backToTop:hover {
             transform: scale(1.1);
         }
-        /* أيقونة التواصل العائمة - تعديل 2 */
+        /* أيقونة التواصل العائمة */
         .contact-float {
             position: fixed;
             bottom: 30px;
@@ -431,7 +450,7 @@
         .contact-body a:hover {
             color: #dc1c1c;
         }
-        /* النوافذ المنبثقة - تعديل 5 */
+        /* النوافذ المنبثقة */
         .modal {
             display: none;
             position: fixed;
@@ -533,7 +552,7 @@
             border-top: 1px solid #444;
             font-size: 14px;
         }
-        /* الوضع الليلي - تعديل 1 */
+        /* الوضع الليلي */
         .dark-mode {
             background-color: #1a1a1a;
             color: #f0f0f0;
@@ -582,7 +601,7 @@
     </style>
 </head>
 <body>
-    <!-- شريط التقدم - تعديل 1 -->
+    <!-- شريط التقدم -->
     <div id="progressBar"></div>
 
     <!-- الشريط العلوي -->
@@ -590,13 +609,9 @@
         <div class="container">
             <div style="display: flex; align-items: center;">
                 <span class="breaking-news"><i class="fas fa-bolt"></i> <span data-i18n="live">Na żywo</span></span>
-                <div class="breaking-ticker" id="ticker">
-                    ⚡ Marszałek Sejmu z wizytą w Kijowie • ⚡ Prezydent podpisał ustawę o pomocy dla obywateli Ukrainy • ⚡ Polska bojkotuje ceremonię otwarcia Paralimpiady
-                </div>
+                <div class="breaking-ticker" id="ticker">⚡ Ładowanie najnowszych wiadomości...</div>
             </div>
-            <div>
-                <i class="fas fa-cloud-sun"></i> Warszawa
-            </div>
+            <div><i class="fas fa-cloud-sun"></i> Warszawa</div>
         </div>
     </div>
 
@@ -605,19 +620,14 @@
         <div class="container">
             <div class="logo-area">
                 <div class="logo">
-                    <h1>
-                        <span>P24</span>
-                        Polska<span>|24</span>
-                    </h1>
+                    <h1><span>P24</span> Polska<span>|24</span></h1>
                     <span class="sub" data-i18n="subtitle">niezależny portal informacyjny</span>
                 </div>
                 <div class="date-lang">
                     <div class="current-date" id="currentDate"></div>
-                    <!-- قائمة اللغات - تعديل 4 -->
+                    <!-- قائمة اللغات -->
                     <div class="lang-dropdown" id="langDropdown">
-                        <div class="lang-switch">
-                            <i class="fas fa-globe"></i> <span id="currentLang">PL</span> <i class="fas fa-chevron-down"></i>
-                        </div>
+                        <div class="lang-switch"><i class="fas fa-globe"></i> <span id="currentLang">PL</span> <i class="fas fa-chevron-down"></i></div>
                         <ul class="lang-menu">
                             <li><a href="#" data-lang="pl">Polski</a></li>
                             <li><a href="#" data-lang="en">English</a></li>
@@ -641,9 +651,328 @@
 
     <!-- المحتوى الرئيسي -->
     <div class="container" id="main">
-        <!-- القسم الرئيسي والخبر الأول -->
+        <!-- القسم الرئيسي والخبر الأول (سيتم تعبئته عبر JS) -->
         <div class="main-news">
-            <div class="featured-article">
-                <img src="https://images.unsplash.com/photo-1566378246598-5b11a0d486cc?w=1200&auto=format" alt="Polska flaga" loading="lazy">
+            <div class="featured-article" id="featuredArticle">
+                <img src="https://images.unsplash.com/photo-1566378246598-5b11a0d486cc?w=1200" alt="Polska flaga" loading="lazy">
                 <div class="featured-content">
-                    <sp
+                    <span class="category-tag" data-i18n="hot">Gorący temat</span>
+                    <h2><a href="#" id="featuredTitle">Ładowanie...</a></h2>
+                    <p id="featuredDesc">Proszę czekać, pobieramy najnowsze informacje.</p>
+                    <div class="meta">
+                        <span><i class="far fa-clock"></i> <span id="featuredTime"></span></span>
+                        <span><i class="far fa-user"></i> Redakcja</span>
+                        <span><i class="far fa-comment"></i> <span class="disqus-comment-count" data-disqus-identifier="article-1">0</span></span>
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar">
+                <div class="sidebar-card">
+                    <h3 data-i18n="trending"><i class="fas fa-fire"></i> Popularne teraz</h3>
+                    <ul class="trending-list" id="trendingList">
+                        <li><span>1</span> Ładowanie...</li>
+                    </ul>
+                </div>
+                <!-- نموذج النشرة البريدية -->
+                <div class="sidebar-card">
+                    <h3><i class="fas fa-envelope"></i> <span data-i18n="newsletter">Newsletter</span></h3>
+                    <p data-i18n="newsletter_desc">Otrzymuj najnowsze wiadomości na maila</p>
+                    <form id="newsletterForm" onsubmit="return false;">
+                        <input type="email" placeholder="Twój email" required style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:5px;">
+                        <button type="submit" style="width:100%; padding:10px; background:#dc1c1c; color:white; border:none; border-radius:5px; cursor:pointer;"><i class="fas fa-paper-plane"></i> <span data-i18n="subscribe">Zapisz się</span></button>
+                    </form>
+                    <p style="font-size:12px; margin-top:10px;" id="newsletterMsg"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- شبكة آخر الأخبار -->
+        <h2 class="section-title" data-i18n="latest">Najnowsze wiadomości <i class="fas fa-arrow-right"></i></h2>
+        <div class="news-grid" id="newsGrid"></div>
+
+        <!-- أقسام التصنيفات -->
+        <section id="polska" class="category-section">
+            <h2 class="section-title" data-i18n="poland">🇵🇱 Z Polski</h2>
+            <div class="news-grid" id="polskaNews"></div>
+        </section>
+        <section id="swiat" class="category-section">
+            <h2 class="section-title" data-i18n="world">🌍 Ze świata</h2>
+            <div class="news-grid" id="swiatNews"></div>
+        </section>
+        <section id="gospodarka" class="category-section">
+            <h2 class="section-title" data-i18n="economy">📈 Gospodarka</h2>
+            <div class="news-grid" id="gospodarkaNews"></div>
+        </section>
+        <section id="sport" class="category-section">
+            <h2 class="section-title" data-i18n="sport">⚽ Sport</h2>
+            <div class="news-grid" id="sportNews"></div>
+        </section>
+        <section id="technologia" class="category-section">
+            <h2 class="section-title" data-i18n="tech">💻 Technologia</h2>
+            <div class="news-grid" id="technologiaNews"></div>
+        </section>
+    </div>
+
+    <!-- التذييل -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div><h4>Polska24</h4><p data-i18n="footer_desc">Automatycznie aktualizowane wiadomości z Polski i świata. Niezależny portal informacyjny.</p></div>
+                <div><h4 data-i18n="sections">Działy</h4><ul><li><a href="#polska" data-i18n="poland">Polska</a></li><li><a href="#swiat" data-i18n="world">Świat</a></li><li><a href="#gospodarka" data-i18n="economy">Gospodarka</a></li><li><a href="#sport" data-i18n="sport">Sport</a></li></ul></div>
+                <div><h4 data-i18n="info">Informacje</h4><ul><li><a href="#" class="footer-link" data-modal="redakcja" data-i18n="editorial">Redakcja</a></li><li><a href="#" class="footer-link" data-modal="reklama" data-i18n="advertising">Reklama</a></li><li><a href="#" class="footer-link" data-modal="prywatnosc" data-i18n="privacy">Prywatność</a></li><li><a href="#" class="footer-link" data-modal="kontakt" data-i18n="contact">Kontakt</a></li></ul></div>
+                <div><h4 data-i18n="social">Social media</h4><ul style="display: flex; gap: 15px;"><li><a href="#" class="social-link disabled"><i class="fab fa-facebook-f"></i></a></li><li><a href="#" class="social-link disabled"><i class="fab fa-twitter"></i></a></li><li><a href="#" class="social-link disabled"><i class="fab fa-instagram"></i></a></li><li><a href="#" class="social-link disabled"><i class="fab fa-youtube"></i></a></li></ul><p style="font-size:12px; margin-top:10px; color:#888;" data-i18n="social_soon">Profile wkrótce</p></div>
+            </div>
+            <div class="visitor-counter"><span><i class="fas fa-eye"></i> <span id="visitorCount">0</span> <span data-i18n="visitors">odwiedzin</span></span><span><i class="fas fa-clock"></i> <span id="onlineTime">0</span> <span data-i18n="seconds">sek.</span></span></div>
+            <div class="copyright">&copy; 2026 Polska24. <span data-i18n="rights">Wszelkie prawa zastrzeżone.</span></div>
+        </div>
+    </footer>
+
+    <!-- النوافذ المنبثقة -->
+    <div id="modal-redakcja" class="modal"><div class="modal-content"><span class="close-modal">&times;</span><h2 data-i18n="about_title">O redakcji Polska24</h2><p data-i18n="about_text1">Polska24 to niezależny portal informacyjny założony w 2026 roku. Naszym celem jest dostarczanie rzetelnych i aktualnych wiadomości z Polski i świata.</p><p data-i18n="about_text2">Korzystamy z automatycznych źródeł RSS (Polsat News) oraz ręcznie redagowanych treści, aby zapewnić naszym czytelnikom najlepsze doświadczenia.</p><p><strong data-i18n="contact_email">Kontakt z redakcją:</strong> redakcja@polska24.pl</p></div></div>
+    <div id="modal-reklama" class="modal"><div class="modal-content"><span class="close-modal">&times;</span><h2 data-i18n="ads_title">Reklama na Polska24</h2><p data-i18n="ads_text1">Chcesz dotrzeć do tysięcy czytelników dziennie? Polska24 oferuje atrakcyjne miejsca reklamowe.</p><p><strong data-i18n="contact_ads">Kontakt w sprawie reklam:</strong> reklama@polska24.pl</p><p data-i18n="ads_formats">Aktualnie dostępne formaty: banery boczne, artykuły sponsorowane, newslettery.</p></div></div>
+    <div id="modal-prywatnosc" class="modal"><div class="modal-content"><span class="close-modal">&times;</span><h2 data-i18n="privacy_title">Polityka prywatności</h2><p data-i18n="privacy_text1">Twoja prywatność jest dla nas ważna. Polska24 nie zbiera żadnych danych osobowych bez Twojej zgody.</p><p data-i18n="privacy_text2">Korzystamy z plików cookies w celu analizy ruchu na stronie poprzez Google Analytics. Możesz zablokować cookies w ustawieniach swojej przeglądarki.</p><p data-i18n="privacy_text3">Dane przesyłane przez formularz kontaktowy są wykorzystywane wyłącznie w celu odpowiedzi na Twoje zapytanie.</p><p><strong data-i18n="security">Bezpieczeństwo:</strong> <span data-i18n="security_text">Strona korzysta z protokołu HTTPS zapewniającego szyfrowane połączenie. Hosting na GitHub Pages gwarantuje stabilność i bezpieczeństwo.</span></p></div></div>
+    <div id="modal-kontakt" class="modal"><div class="modal-content"><span class="close-modal">&times;</span><h2 data-i18n="contact_title">Skontaktuj się z nami</h2><p><i class="fas fa-envelope"></i> <strong>Email:</strong> kontakt@polska24.pl</p><p><i class="fas fa-phone"></i> <strong>Telefon:</strong> +48 123 456 789</p><p><i class="fas fa-map-marker-alt"></i> <strong data-i18n="address">Adres redakcji:</strong> ul. Marszałkowska 1, 00-001 Warszawa</p><p data-i18n="office_hours">Jesteśmy do Twojej dyspozycji od poniedziałku do piątku w godzinach 9:00-17:00.</p></div></div>
+
+    <!-- أيقونة التواصل العائمة -->
+    <div class="contact-float" id="contactFloat">
+        <button class="contact-button" id="contactToggle"><i class="fas fa-comment"></i></button>
+        <div class="contact-panel" id="contactPanel">
+            <div class="contact-header"><h4 data-i18n="contact_us">Skontaktuj się z nami</h4><button class="close-panel" id="closeContact">&times;</button></div>
+            <div class="contact-body">
+                <p><i class="fas fa-envelope" style="color: #dc1c1c;"></i> <a href="mailto:kontakt@polska24.pl">kontakt@polska24.pl</a></p>
+                <p><i class="fab fa-whatsapp" style="color: #25D366;"></i> <a href="https://wa.me/48123456789" target="_blank">+48 123 456 789</a></p>
+                <p><i class="fab fa-facebook-messenger" style="color: #0084FF;"></i> <a href="#" class="disabled">Messenger</a></p>
+                <hr><p style="font-size: 0.9rem;" data-i18n="contact_footer">Zgłoś problem lub podziel się opinią. Odpowiemy najszybciej jak to możliwe.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- زر العودة للأعلى -->
+    <button id="backToTop"><i class="fas fa-arrow-up"></i></button>
+
+    <!-- نظام التعليقات Disqus -->
+    <div id="disqus_thread"></div>
+    <script>
+        // ========== تهيئة Disqus ==========
+        var disqus_config = function () {
+            this.page.url = window.location.href;
+            this.page.identifier = 'polska24-article';
+        };
+        (function() {
+            if (document.getElementById('disqus_thread')) {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://YOUR_DISQUS_SHORTNAME.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            }
+        })();
+    </script>
+    <script id="dsq-count-scr" src="//YOUR_DISQUS_SHORTNAME.disqus.com/count.js" async></script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+    <script>
+        // ========== التواريخ ==========
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const today = new Date().toLocaleDateString('pl-PL', options);
+        document.getElementById('currentDate').innerHTML = '<i class="far fa-calendar-alt"></i> ' + today.charAt(0).toUpperCase() + today.slice(1);
+
+        // ========== عداد الزوار والوقت ==========
+        let visitorCount = localStorage.getItem('visitorCount') || 0;
+        localStorage.setItem('visitorCount', ++visitorCount);
+        document.getElementById('visitorCount').innerText = visitorCount;
+        let seconds = 0;
+        setInterval(() => { seconds++; document.getElementById('onlineTime').innerText = seconds; }, 1000);
+
+        // ========== زر العودة للأعلى وشريط التقدم ==========
+        window.onscroll = function() {
+            const btn = document.getElementById('backToTop');
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) btn.style.display = 'block';
+            else btn.style.display = 'none';
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        };
+        document.getElementById('backToTop').onclick = () => window.scrollTo({top: 0, behavior: 'smooth'});
+
+        // ========== الوضع الليلي ==========
+        const darkModeToggle = document.createElement('div');
+        darkModeToggle.className = 'lang-switch';
+        darkModeToggle.id = 'darkModeToggle';
+        darkModeToggle.style.cursor = 'pointer';
+        darkModeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+        document.querySelector('.date-lang').appendChild(darkModeToggle);
+        darkModeToggle.onclick = function() {
+            document.body.classList.toggle('dark-mode');
+            const icon = this.querySelector('i');
+            if (document.body.classList.contains('dark-mode')) { icon.className = 'fas fa-sun'; localStorage.setItem('darkMode', 'enabled'); }
+            else { icon.className = 'fas fa-moon'; localStorage.setItem('darkMode', 'disabled'); }
+        };
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            document.body.classList.add('dark-mode');
+            darkModeToggle.querySelector('i').className = 'fas fa-sun';
+        }
+
+        // ========== النشرة البريدية ==========
+        document.getElementById('newsletterForm').onsubmit = function(e) {
+            e.preventDefault();
+            document.getElementById('newsletterMsg').innerText = 'Dziękujemy! Sprawdź swoją skrzynkę.';
+            this.querySelector('input[type=email]').value = '';
+        };
+
+        // ========== قائمة اللغات ==========
+        const langDropdown = document.getElementById('langDropdown');
+        const langSwitch = langDropdown.querySelector('.lang-switch');
+        const langMenu = langDropdown.querySelector('.lang-menu');
+        const currentLangSpan = document.getElementById('currentLang');
+
+        const translations = {
+            pl: { live:'Na żywo', subtitle:'niezależny portal informacyjny', home:'Strona główna', poland:'Polska', world:'Świat', economy:'Gospodarka', sport:'Sport', tech:'Technologia', hot:'Gorący temat', trending:'Popularne teraz', newsletter:'Newsletter', newsletter_desc:'Otrzymuj najnowsze wiadomości na maila', subscribe:'Zapisz się', latest:'Najnowsze wiadomości', sections:'Działy', info:'Informacje', editorial:'Redakcja', advertising:'Reklama', privacy:'Prywatność', contact:'Kontakt', social:'Social media', social_soon:'Profile wkrótce', visitors:'odwiedzin', seconds:'sek.', rights:'Wszelkie prawa zastrzeżone.', about_title:'O redakcji Polska24', about_text1:'Polska24 to niezależny portal informacyjny założony w 2026 roku. Naszym celem jest dostarczanie rzetelnych i aktualnych wiadomości z Polski i świata.', about_text2:'Korzystamy z automatycznych źródeł RSS (Polsat News) oraz ręcznie redagowanych treści, aby zapewnić naszym czytelnikom najlepsze doświadczenia.', contact_email:'Kontakt z redakcją:', ads_title:'Reklama na Polska24', ads_text1:'Chcesz dotrzeć do tysięcy czytelników dziennie? Polska24 oferuje atrakcyjne miejsca reklamowe.', contact_ads:'Kontakt w sprawie reklam:', ads_formats:'Aktualnie dostępne formaty: banery boczne, artykuły sponsorowane, newslettery.', privacy_title:'Polityka prywatności', privacy_text1:'Twoja prywatność jest dla nas ważna. Polska24 nie zbiera żadnych danych osobowych bez Twojej zgody.', privacy_text2:'Korzystamy z plików cookies w celu analizy ruchu na stronie poprzez Google Analytics. Możesz zablokować cookies w ustawieniach swojej przeglądarki.', privacy_text3:'Dane przesyłane przez formularz kontaktowy są wykorzystywane wyłącznie w celu odpowiedzi na Twoje zapytanie.', security:'Bezpieczeństwo:', security_text:'Strona korzysta z protokołu HTTPS zapewniającego szyfrowane połączenie. Hosting na GitHub Pages gwarantuje stabilność i bezpieczeństwo.', contact_title:'Skontaktuj się z nami', address:'Adres redakcji:', office_hours:'Jesteśmy do Twojej dyspozycji od poniedziałku do piątku w godzinach 9:00-17:00.', contact_us:'Skontaktuj się z nami', contact_footer:'Zgłoś problem lub podziel się opinią. Odpowiemy najszybciej jak to możliwe.', footer_desc:'Automatycznie aktualizowane wiadomości z Polski i świata. Niezależny portal informacyjny.' },
+            en: { live:'Live', subtitle:'independent news portal', home:'Home', poland:'Poland', world:'World', economy:'Economy', sport:'Sport', tech:'Technology', hot:'Hot topic', trending:'Trending now', newsletter:'Newsletter', newsletter_desc:'Get the latest news by email', subscribe:'Subscribe', latest:'Latest news', sections:'Sections', info:'Info', editorial:'Editorial', advertising:'Advertising', privacy:'Privacy', contact:'Contact', social:'Social media', social_soon:'Profiles coming soon', visitors:'visits', seconds:'sec.', rights:'All rights reserved.', about_title:'About Polska24', about_text1:'Polska24 is an independent news portal founded in 2026. Our goal is to provide reliable and up-to-date news from Poland and around the world.', about_text2:'We use automatic RSS feeds (Polsat News) and manually curated content to provide the best experience for our readers.', contact_email:'Contact editorial:', ads_title:'Advertising on Polska24', ads_text1:'Want to reach thousands of readers daily? Polska24 offers attractive advertising spaces.', contact_ads:'Contact for advertising:', ads_formats:'Currently available formats: sidebar banners, sponsored articles, newsletters.', privacy_title:'Privacy Policy', privacy_text1:'Your privacy is important to us. Polska24 does not collect any personal data without your consent.', privacy_text2:'We use cookies to analyze traffic through Google Analytics. You can block cookies in your browser settings.', privacy_text3:'Data sent through the contact form is used only to respond to your inquiry.', security:'Security:', security_text:'The site uses HTTPS protocol providing encrypted connection. Hosting on GitHub Pages guarantees stability and security.', contact_title:'Contact us', address:'Editorial address:', office_hours:'We are available Monday to Friday from 9:00 AM to 5:00 PM.', contact_us:'Contact us', contact_footer:'Report a problem or share feedback. We will respond as soon as possible.', footer_desc:'Automatically updated news from Poland and the world. Independent news portal.' },
+            uk: { live:'Наживо', subtitle:'незалежний інформаційний портал', home:'Головна', poland:'Польща', world:'Світ', economy:'Економіка', sport:'Спорт', tech:'Технології', hot:'Гаряча тема', trending:'Популярне зараз', newsletter:'Розсилка', newsletter_desc:'Отримуйте останні новини на email', subscribe:'Підписатися', latest:'Останні новини', sections:'Розділи', info:'Інформація', editorial:'Редакція', advertising:'Реклама', privacy:'Конфіденційність', contact:'Контакти', social:'Соцмережі', social_soon:'Скоро з\'являться', visitors:'відвідувань', seconds:'сек.', rights:'Всі права захищено.', about_title:'Про Polska24', about_text1:'Polska24 - це незалежний інформаційний портал, заснований у 2026 році. Наша мета - надавати достовірні та актуальні новини з Польщі та світу.', about_text2:'Ми використовуємо автоматичні RSS-канали (Polsat News) та власний контент для найкращого досвіду читачів.', contact_email:'Контакт з редакцією:', ads_title:'Реклама на Polska24', ads_text1:'Бажаєте охопити тисячі читачів щодня? Polska24 пропонує вигідні рекламні місця.', contact_ads:'Контакт щодо реклами:', ads_formats:'Доступні формати: бічні банери, спонсоровані статті, розсилки.', privacy_title:'Політика конфіденційності', privacy_text1:'Ваша приватність важлива для нас. Polska24 не збирає жодних персональних даних без вашої згоди.', privacy_text2:'Ми використовуємо файли cookie для аналізу трафіку через Google Analytics. Ви можете заблокувати їх у налаштуваннях браузера.', privacy_text3:'Дані з форми контакту використовуються лише для відповіді на ваш запит.', security:'Безпека:', security_text:'Сайт використовує протокол HTTPS для зашифрованого з\'єднання. Хостинг на GitHub Pages гарантує стабільність і безпеку.', contact_title:'Зв\'яжіться з нами', address:'Адреса редакції:', office_hours:'Ми доступні з понеділка по п\'ятницю з 9:00 до 17:00.', contact_us:'Зв\'яжіться з нами', contact_footer:'Повідомте про проблему або поділіться відгуком. Ми відповімо якнайшвидше.', footer_desc:'Автоматично оновлювані новини з Польщі та світу. Незалежний інформаційний портал.' }
+        };
+
+        function setLanguage(lang) {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.placeholder = translations[lang][key];
+                    else el.innerHTML = translations[lang][key];
+                }
+            });
+            currentLangSpan.innerText = lang.toUpperCase();
+            localStorage.setItem('preferredLang', lang);
+        }
+
+        langSwitch.addEventListener('click', () => langDropdown.classList.toggle('active'));
+        langMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                setLanguage(link.dataset.lang);
+                langDropdown.classList.remove('active');
+            });
+        });
+        document.addEventListener('click', (e) => { if (!langDropdown.contains(e.target)) langDropdown.classList.remove('active'); });
+        const savedLang = localStorage.getItem('preferredLang') || 'pl';
+        setLanguage(savedLang);
+
+        // ========== أيقونة التواصل ==========
+        const contactToggle = document.getElementById('contactToggle');
+        const contactPanel = document.getElementById('contactPanel');
+        const closeContact = document.getElementById('closeContact');
+        contactToggle.addEventListener('click', (e) => { e.stopPropagation(); contactPanel.classList.toggle('active'); });
+        closeContact.addEventListener('click', () => contactPanel.classList.remove('active'));
+        document.addEventListener('click', (e) => { if (!contactPanel.contains(e.target) && !contactToggle.contains(e.target)) contactPanel.classList.remove('active'); });
+        contactPanel.addEventListener('click', (e) => e.stopPropagation());
+
+        // ========== النوافذ المنبثقة ==========
+        const modals = { redakcja: document.getElementById('modal-redakcja'), reklama: document.getElementById('modal-reklama'), prywatnosc: document.getElementById('modal-prywatnosc'), kontakt: document.getElementById('modal-kontakt') };
+        document.querySelectorAll('.footer-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const modalId = link.dataset.modal;
+                if (modals[modalId]) modals[modalId].style.display = 'block';
+            });
+        });
+        document.querySelectorAll('.close-modal').forEach(btn => {
+            btn.addEventListener('click', () => document.querySelectorAll('.modal').forEach(modal => modal.style.display = 'none'));
+        });
+        window.addEventListener('click', (e) => {
+            document.querySelectorAll('.modal').forEach(modal => { if (e.target === modal) modal.style.display = 'none'; });
+        });
+        document.querySelectorAll('.social-link.disabled').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                alert('Profile społecznościowe Polska24 wkrótce. Zapraszamy do kontaktu przez email.');
+            });
+        });
+
+        // ========== جلب الأخبار التلقائي (من Polsat News) ==========
+        async function fetchNews() {
+            try {
+                const response = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://www.polsatnews.pl/rss/wszystkie.xml');
+                const data = await response.json();
+                if (data.status !== 'ok') throw new Error('Nie udało się pobrać wiadomości');
+
+                const items = data.items;
+
+                // تحديث شريط الأخبار العاجلة
+                document.getElementById('ticker').innerHTML = `⚡ ${items.slice(0,3).map(i => i.title).join(' • ')}`;
+
+                // تحديث الخبر الرئيسي
+                const main = items[0];
+                document.getElementById('featuredTitle').innerHTML = `<a href="${main.link}" target="_blank">${main.title}</a>`;
+                document.getElementById('featuredDesc').innerText = main.description.replace(/<[^>]*>/g, '').substring(0,150)+'...';
+                const pubDate = new Date(main.pubDate);
+                const hoursDiff = Math.floor((new Date() - pubDate) / (1000*60*60));
+                document.getElementById('featuredTime').innerText = hoursDiff < 1 ? 'Przed chwilą' : `${hoursDiff} godzin(y) temu`;
+
+                // تحديث قائمة الأكثر قراءة
+                const trending = document.getElementById('trendingList');
+                trending.innerHTML = '';
+                items.slice(1,6).forEach((item, idx) => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<span>${idx+1}</span> <a href="${item.link}" target="_blank" style="color:#222; text-decoration:none;">${item.title}</a>`;
+                    trending.appendChild(li);
+                });
+
+                // تحديث شبكة الأخبار
+                const newsGrid = document.getElementById('newsGrid');
+                newsGrid.innerHTML = '';
+                items.slice(0,8).forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'news-item';
+                    div.innerHTML = `
+                        <img src="${item.thumbnail || 'https://images.unsplash.com/photo-1566378246598-5b11a0d486cc?w=600'}" loading="lazy">
+                        <div class="news-item-content">
+                            <h4><a href="${item.link}" target="_blank">${item.title}</a></h4>
+                            <p>${item.description.replace(/<[^>]*>/g, '').substring(0,80)}...</p>
+                            <div class="meta"><span><i class="far fa-clock"></i> ${new Date(item.pubDate).toLocaleDateString('pl-PL')}</span></div>
+                        </div>
+                    `;
+                    newsGrid.appendChild(div);
+                });
+
+                // تصنيف بسيط لبقية الأقسام (يمكن تطويره لاحقاً)
+                const polskaNews = items.filter(i => i.categories && i.categories.includes('Polska')).slice(0,3);
+                const swiatNews = items.filter(i => i.categories && i.categories.includes('Świat')).slice(0,3);
+                const gospodarkaNews = items.filter(i => i.categories && i.categories.includes('Gospodarka')).slice(0,3);
+                const sportNews = items.filter(i => i.categories && i.categories.includes('Sport')).slice(0,3);
+                const techNews = items.filter(i => i.categories && i.categories.includes('Technologia')).slice(0,3);
+
+                function fillCategoryGrid(containerId, catItems) {
+                    const container = document.getElementById(containerId);
+                    if (!container) return;
+                    container.innerHTML = '';
+                    catItems.forEach(item => {
+                        const div = document.createElement('div');
+                        div.className = 'news-item';
+                        div.innerHTML = `
+                            <img src="${item.thumbnail || 'https://images.unsplash.com/photo-1566378246598-5b11a0d486cc?w=600'}" loading="lazy">
+                            <div class="news-item-content">
+                                <h4><a href="${item.link}" target="_blank">${item.title}</a></h4>
+                                <p>${item.description.replace(/<[^>]*>/g, '').substring(0,60)}...</p>
+                            </div>
+                        `;
+                        container.appendChild(div);
+                    });
+                }
+
+                fillCategoryGrid('polskaNews', polskaNews);
+                fillCategoryGrid('swiatNews', swiatNews);
+                fillCategoryGrid('gospodarkaNews', gospodarkaNews);
+                fillCategoryGrid('sportNews', sportNews);
+                fillCategoryGrid('technologiaNews', techNews);
+
+            } catch (error) {
+                console.error('Błąd pobierania wiadomości:', error);
+                document.getElementById('newsGrid').innerHTML = '<div class="error-message">Nie udało się pobrać wiadomości. Odśwież stronę za chwilę.</div>';
+            }
+        }
+
+        // استدعاء دالة جلب الأخبار فوراً، ثم كل 30 دقيقة
+        fetchNews();
+        setInterval(fetchNews, 30 * 60 * 1000);
+    </script>
+</body>
+</html>
