@@ -3,7 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Polska24 - Najnowsze wiadomości automatycznie</title>
+    <title>Polska24 - Najnowsze wiadomości z Polski i świata</title>
+    <!-- تحسين محركات البحث (SEO) - تعديل 1 -->
+    <meta name="description" content="Polska24 - niezależny portal informacyjny. Najnowsze wiadomości z Polski i świata, polityka, gospodarka, sport, technologia.">
+    <meta name="keywords" content="Polska, wiadomości, newsy, informacje, polityka, gospodarka, sport, technologia">
+    <meta name="author" content="Polska24">
+    <meta property="og:title" content="Polska24 - Najnowsze wiadomości">
+    <meta property="og:description" content="Automatycznie aktualizowane wiadomości z Polski i świata.">
+    <meta property="og:url" content="https://polska24.github.io/polska24-news/">
+    <meta name="twitter:card" content="summary_large_image">
+    <!-- Favicon - تعديل 1 -->
+    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23dc1c1c'/><text x='50' y='70' font-size='70' text-anchor='middle' fill='white' font-weight='bold'>P24</text></svg>">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,7 +21,7 @@
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* جميع الأنماط السابقة كما هي - يمكنك الاحتفاظ بها */
+        /* الأنماط العامة */
         * {
             margin: 0;
             padding: 0;
@@ -22,8 +32,29 @@
             background-color: #f5f5f5;
             color: #222;
             line-height: 1.6;
-            scroll-behavior: smooth;
+            transition: background-color 0.3s, color 0.3s;
         }
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 70px;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        /* شريط التقدم - تعديل 1 */
+        #progressBar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: #dc1c1c;
+            width: 0%;
+            z-index: 1000;
+            transition: width 0.1s;
+        }
+        /* الشريط العلوي */
         .top-bar {
             background-color: #dc1c1c;
             color: white;
@@ -45,20 +76,12 @@
             text-transform: uppercase;
             margin-right: 15px;
         }
-        .breaking-ticker {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+        /* الهيدر */
         .header {
             background-color: white;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             padding: 20px 0;
-        }
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
+            transition: background-color 0.3s;
         }
         .logo-area {
             display: flex;
@@ -67,12 +90,26 @@
             flex-wrap: wrap;
         }
         .logo h1 {
+            display: flex;
+            align-items: center;
             font-size: 2.5rem;
             font-weight: 800;
             color: #dc1c1c;
             letter-spacing: -1px;
         }
-        .logo span {
+        .logo h1 span:first-child {
+            background: #dc1c1c;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 30px;
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+        .logo h1 span:last-child {
+            color: #dc1c1c;
+            font-weight: 300;
+        }
+        .logo span.sub {
             color: #333;
             font-size: 1rem;
             font-weight: 400;
@@ -90,6 +127,11 @@
             font-size: 14px;
             font-weight: 500;
         }
+        /* قائمة اللغات - تعديل 4 */
+        .lang-dropdown {
+            position: relative;
+            display: inline-block;
+        }
         .lang-switch {
             background: #dc1c1c;
             color: white;
@@ -97,8 +139,38 @@
             border-radius: 30px;
             font-size: 14px;
             font-weight: 600;
-            cursor: default;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
+        .lang-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            min-width: 120px;
+            z-index: 100;
+            list-style: none;
+            padding: 5px 0;
+        }
+        .lang-menu li a {
+            display: block;
+            padding: 8px 15px;
+            color: #333;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .lang-menu li a:hover {
+            background: #f0f0f0;
+        }
+        .lang-dropdown.active .lang-menu {
+            display: block;
+        }
+        /* القائمة الرئيسية */
         .nav-menu {
             background-color: #333;
             margin-top: 20px;
@@ -118,11 +190,28 @@
             text-decoration: none;
             font-weight: 600;
             transition: 0.3s;
+            position: relative;
+            overflow: hidden;
         }
         .nav-menu ul li a:hover,
         .nav-menu ul li a.active {
             background-color: #dc1c1c;
         }
+        .nav-menu ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background: #dc1c1c;
+            transition: 0.3s;
+            transform: translateX(-50%);
+        }
+        .nav-menu ul li a:hover::after {
+            width: 80%;
+        }
+        /* الشبكة الرئيسية */
         .main-news {
             margin: 30px 0;
             display: grid;
@@ -163,10 +252,6 @@
             text-decoration: none;
             color: inherit;
         }
-        .featured-content p {
-            color: #555;
-            margin-bottom: 20px;
-        }
         .meta {
             display: flex;
             gap: 20px;
@@ -179,6 +264,7 @@
             margin-right: 5px;
             color: #dc1c1c;
         }
+        /* الشريط الجانبي */
         .sidebar {
             display: flex;
             flex-direction: column;
@@ -197,26 +283,7 @@
             padding-bottom: 10px;
             border-bottom: 3px solid #dc1c1c;
         }
-        .trending-list {
-            list-style: none;
-        }
-        .trending-list li {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        .trending-list li span {
-            background: #f0f0f0;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: #dc1c1c;
-        }
+        /* شبكة الأخبار */
         .news-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -228,16 +295,16 @@
             border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-            transition: transform 0.3s;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
         .news-item:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(220, 28, 28, 0.15);
         }
         .news-item img {
             width: 100%;
             height: 180px;
             object-fit: cover;
-            background-color: #ddd;
         }
         .news-item-content {
             padding: 20px;
@@ -254,37 +321,181 @@
         .news-item h4 a:hover {
             color: #dc1c1c;
         }
-        .news-item p {
-            color: #555;
-            font-size: 0.95rem;
-            margin-bottom: 10px;
+        /* عداد الزوار - تعديل 1 */
+        .visitor-counter {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
         }
-        .news-item .meta {
+        /* زر العودة للأعلى - تعديل 1 */
+        #backToTop {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            background: #dc1c1c;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
             border: none;
-            padding: 0;
-            margin-top: 10px;
+            cursor: pointer;
+            display: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 999;
+            font-size: 20px;
+            transition: transform 0.3s;
         }
-        .category-section {
-            margin-top: 50px;
+        #backToTop:hover {
+            transform: scale(1.1);
         }
-        .section-title {
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            border-bottom: 3px solid #dc1c1c;
-            padding-bottom: 10px;
+        /* أيقونة التواصل العائمة - تعديل 2 */
+        .contact-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            font-family: 'Inter', sans-serif;
         }
-        .loader {
-            text-align: center;
-            padding: 30px;
+        .contact-button {
+            width: 60px;
+            height: 60px;
+            background: #dc1c1c;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 26px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(220, 28, 28, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .contact-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(220, 28, 28, 0.4);
+        }
+        .contact-panel {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 280px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: none;
+            overflow: hidden;
+            animation: slideIn 0.3s ease;
+        }
+        .contact-panel.active {
+            display: block;
+        }
+        .contact-header {
+            background: #dc1c1c;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .contact-header h4 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        .close-panel {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .contact-body {
+            padding: 20px;
+        }
+        .contact-body p {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .contact-body a {
+            color: #333;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .contact-body a:hover {
             color: #dc1c1c;
         }
-        .error-message {
-            text-align: center;
-            padding: 20px;
-            background: #ffeeee;
-            border-radius: 10px;
-            color: #c00;
+        /* النوافذ المنبثقة - تعديل 5 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s;
         }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: slideDown 0.3s;
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #888;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .close-modal:hover {
+            color: #dc1c1c;
+        }
+        .modal h2 {
+            color: #dc1c1c;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+        .modal p {
+            margin: 15px 0;
+            line-height: 1.6;
+            color: #333;
+        }
+        /* روابط التواصل الاجتماعي المعطلة */
+        .social-link.disabled {
+            pointer-events: none;
+            opacity: 0.5;
+            cursor: default;
+        }
+        .footer-link {
+            cursor: pointer;
+        }
+        /* التذييل */
         .footer {
             background-color: #222;
             color: #bbb;
@@ -311,7 +522,7 @@
         .footer ul li a {
             color: #bbb;
             text-decoration: none;
-            transition: 0.3s;
+            transition: color 0.2s;
         }
         .footer ul li a:hover {
             color: #dc1c1c;
@@ -322,6 +533,40 @@
             border-top: 1px solid #444;
             font-size: 14px;
         }
+        /* الوضع الليلي - تعديل 1 */
+        .dark-mode {
+            background-color: #1a1a1a;
+            color: #f0f0f0;
+        }
+        .dark-mode .header,
+        .dark-mode .news-item,
+        .dark-mode .sidebar-card,
+        .dark-mode .featured-article,
+        .dark-mode .contact-panel,
+        .dark-mode .modal-content {
+            background-color: #2d2d2d !important;
+            color: #f0f0f0 !important;
+        }
+        .dark-mode .news-item h4 a,
+        .dark-mode .featured-content h2 a,
+        .dark-mode .contact-body a {
+            color: #f0f0f0 !important;
+        }
+        .dark-mode .meta,
+        .dark-mode .current-date {
+            background-color: #444;
+            color: #ddd;
+        }
+        .dark-mode .lang-menu {
+            background-color: #2d2d2d;
+        }
+        .dark-mode .lang-menu li a {
+            color: #f0f0f0;
+        }
+        .dark-mode .lang-menu li a:hover {
+            background-color: #444;
+        }
+        /* استجابة للشاشات الصغيرة */
         @media (max-width: 768px) {
             .main-news {
                 grid-template-columns: 1fr;
@@ -337,13 +582,16 @@
     </style>
 </head>
 <body>
-    <!-- Górny pasek z tickerem -->
+    <!-- شريط التقدم - تعديل 1 -->
+    <div id="progressBar"></div>
+
+    <!-- الشريط العلوي -->
     <div class="top-bar">
         <div class="container">
             <div style="display: flex; align-items: center;">
-                <span class="breaking-news"><i class="fas fa-bolt"></i> Na żywo</span>
+                <span class="breaking-news"><i class="fas fa-bolt"></i> <span data-i18n="live">Na żywo</span></span>
                 <div class="breaking-ticker" id="ticker">
-                    ⚡ Ładowanie najnowszych wiadomości...
+                    ⚡ Marszałek Sejmu z wizytą w Kijowie • ⚡ Prezydent podpisał ustawę o pomocy dla obywateli Ukrainy • ⚡ Polska bojkotuje ceremonię otwarcia Paralimpiady
                 </div>
             </div>
             <div>
@@ -352,719 +600,50 @@
         </div>
     </div>
 
-    <!-- Nagłówek -->
+    <!-- الهيدر -->
     <div class="header">
         <div class="container">
             <div class="logo-area">
                 <div class="logo">
-                    <h1>Polska<span style="color: #dc1c1c;">24</span></h1>
-                    <span>automatyczne wiadomości z Polsat News</span>
+                    <h1>
+                        <span>P24</span>
+                        Polska<span>|24</span>
+                    </h1>
+                    <span class="sub" data-i18n="subtitle">niezależny portal informacyjny</span>
                 </div>
                 <div class="date-lang">
                     <div class="current-date" id="currentDate"></div>
-                    <div class="lang-switch"><i class="fas fa-globe"></i> PL</div>
-                </div>
-            </div>
-            <nav class="nav-menu">
-                <ul>
-                    <li><a href="#main" class="active">Strona główna</a></li>
-                    <li><a href="#polska">Polska</a></li>
-                    <li><a href="#swiat">Świat</a></li>
-                    <li><a href="#gospodarka">Gospodarka</a></li>
-                    <li><a href="#sport">Sport</a></li>
-                    <li><a href="#technologia">Technologia</a></li>
-                </ul>
-            </nav>
-        </div>
-    </div>
-
-    <!-- Główna zawartość -->
-    <div class="container" id="main">
-        <!-- Artykuł główny i sidebar - zostawiamy statyczne na razie -->
-        <div class="main-news">
-            <div class="featured-article">
-                <img src="https://images.unsplash.com/photo-1566378246598-5b11a0d486cc?w=1200&auto=format" alt="Polska flaga">
-                <div class="featured-content">
-                    <span class="category-tag">Na czasie</span>
-                    <h2><a href="#" id="mainNewsTitle">Najnowsze wiadomości z Polski</a></h2>
-                    <p id="mainNewsDescription">Ładowanie najświeższych informacji z polskich serwisów...</p>
-                    <div class="meta" id="mainNewsMeta">
-                        <span><i class="far fa-clock"></i> <span id="mainNewsTime">Właśnie teraz</span></span>
-                        <span><i class="far fa-user"></i> Redakcja</span>
-                    </div>
-                </div>
-            </div>
-            <div class="sidebar">
-                <div class="sidebar-card">
-                    <h3><i class="fas fa-fire" style="color:#dc1c1c;"></i> Popularne teraz</h3>
-                    <ul class="trending-list" id="trendingList">
-                        <li><span>1</span> Ładowanie...</li>
-                    </ul>
-                </div>
-                <div class="sidebar-card">
-                    <h3><i class="fas fa-newspaper"></i> Reklama</h3>
-                    <img src="https://via.placeholder.com/300x200/red/white?text=Twoja+reklama+tutaj" style="width:100%; border-radius:10px;">
-                </div>
-            </div>
-        </div>
-
-        <!-- Sekcja najnowsze - TUTAJ BĘDĄ DYNAMICZNE WIADOMOŚCI -->
-        <h2 class="section-title">Najnowsze wiadomości <i class="fas fa-arrow-right" style="color:#dc1c1c;"></i></h2>
-        <div class="news-grid" id="newsGrid">
-            <div class="loader"><i class="fas fa-spinner fa-spin"></i> Pobieranie najnowszych wiadomości...</div>
-        </div>
-
-        <!-- Sekcje kategorii (pozostawiamy puste, wypełnimy je JavaScriptem) -->
-        <section id="polska" class="category-section">
-            <h2 class="section-title">🇵🇱 Z Polski</h2>
-            <div class="news-grid" id="polskaNews"></div>
-        </section>
-
-        <section id="swiat" class="category-section">
-            <h2 class="section-title">🌍 Ze świata</h2>
-            <div class="news-grid" id="swiatNews"></div>
-        </section>
-
-        <section id="gospodarka" class="category-section">
-            <h2 class="section-title">📈 Gospodarka</h2>
-            <div class="news-grid" id="gospodarkaNews"></div>
-        </section>
-
-        <section id="sport" class="category-section">
-            <h2 class="section-title">⚽ Sport</h2>
-            <div class="news-grid" id="sportNews"></div>
-        </section>
-
-        <section id="technologia" class="category-section">
-            <h2 class="section-title">💻 Technologia</h2>
-            <div class="news-grid" id="technologiaNews"></div>
-        </section>
-    </div>
-
-    <!-- Stopka -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div>
-                    <h4>Polska24</h4>
-                    <p>Automatycznie aktualizowane wiadomości z Polsat News [citation:1]. Źródło: rss2json.com</p>
-                </div>
-                <div>
-                    <h4>Działy</h4>
-                    <ul>
-                        <li><a href="#polska">Polska</a></li>
-                        <li><a href="#swiat">Świat</a></li>
-                        <li><a href="#gospodarka">Biznes</a></li>
-                        <li><a href="#sport">Sport</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4>Informacje</h4>
-                    <ul>
-                        <li><a href="#">Redakcja</a></li>
-                        <li><a href="#">Reklama</a></li>
-                        <li><a href="#">Prywatność</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4>Social media</h4>
-                    <ul style="display: flex; gap: 15px;">
-                        <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
-                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-                        <li><a href="#"><i class="fab fa-instagram"></i></a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="copyright">
-                &copy; 2026 Polska24. Aktualizacja na żywo z Polsat News.
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // Wyświetlenie aktualnej daty po polsku
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        const today = new Date().toLocaleDateString('pl-PL', options);
-        document.getElementById('currentDate').innerHTML = '<i class="far fa-calendar-alt"></i> ' + today.charAt(0).toUpperCase() + today.slice(1);
-
-        // === FUNKCJA POBIERAJĄCA NAJNOWSZE WIADOMOŚCI Z POLSAT NEWS ===
-        async function fetchNews() {
-            try {
-                // Pobieramy RSS Polsat News przez darmowe API rss2json.com
-                const response = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://www.polsatnews.pl/rss/wszystkie.xml');
-                const data = await response.json();
-                
-                if (data.status !== 'ok') {
-                    throw new Error('Nie udało się pobrać wiadomości');
-                }
-
-                const items = data.items; // Tablica z artykułami
-                
-                // Aktualizacja paska ticker (3 pierwsze tytuły)
-                const tickerTitles = items.slice(0, 3).map(item => item.title).join(' • ');
-                document.getElementById('ticker').innerHTML = `⚡ ${tickerTitles}`;
-                
-                // Aktualizacja głównego artykułu (pierwszy news)
-                const mainNews = items[0];
-                document.getElementById('mainNewsTitle').innerHTML = `<a href="${mainNews.link}" target="_blank">${mainNews.title}</a>`;
-                document.getElementById('mainNewsDescription').innerText = mainNews.description.replace(/<[^>]*>/g, '').substring(0, 150) + '...';
-                
-                // Formatowanie daty
-                const pubDate = new Date(mainNews.pubDate);
-                const timeAgo = Math.floor((new Date() - pubDate) / (1000 * 60 * 60));
-                document.getElementById('mainNewsTime').innerText = timeAgo < 1 ? 'Przed chwilą' : `${timeAgo} godzin(y) temu`;
-                
-                // Aktualizacja listy popularnych (5 kolejnych tytułów)
-                const trendingList = document.getElementById('trendingList');
-                trendingList.innerHTML = '';
-                items.slice(1, 6).forEach((item, index) => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `<span>${index + 1}</span> <a href="${item.link}" target="_blank" style="color:#222; text-decoration:none;">${item.title}</a>`;
-                    trendingList.appendChild(li);
-                });
-                
-                // Wypełnienie siatki najnowszych wiadomości (wszystkie artykuły)
-                const newsGrid = document.getElementById('newsGrid');
-                newsGrid.innerHTML = '';
-                items.slice(0, 8).forEach(item => {
-                    const newsItem = document.createElement('div');
-                    newsItem.className = 'news-item';
-                    
-                    // Prosta kategoryzacja po słowach kluczowych
-                    let category = 'Wiadomości';
-                    if (item.title.toLowerCase().includes('sport') || item.title.toLowerCase().includes('mecz') || item.title.toLowerCase().includes('piłka')) {
-                        category = 'Sport';
-                    } else if (item.title.toLowerCase().includes('gospodarka') || item.title.toLowerCase().includes('budżet') || item.title.toLowerCase().includes('inflacja')) {
-                        category = 'Gospodarka';
-                    } else if (item.title.toLowerCase().includes('technologia') || item.title.toLowerCase().includes('ai') || item.title.toLowerCase().includes('cyber')) {
-                        category = 'Technologia';
-                    } else if (item.title.toLowerCase().includes('świat') || item.title.toLowerCase().includes('usa') || item.title.toLowerCase().includes('niemcy')) {
-                        category = 'Świat';
-                    } else {
-                        category = 'Polska';
-                    }
-                    
-                    newsItem.innerHTML = `
-                        <img src="${item.thumbnail || 'https://images.unsplash.com/photo-1566378246598-5b11a0d486cc?w=600'}" alt="News" onerror="this.src='https://images.unsplash.com/photo-1566378246598-5b11a0d486cc?w=600'">
-                        <div class="news-item-content">
-                            <span class="category-tag" style="background:#333;">${category}</span>
-                            <h4><a href="${item.link}" target="_blank">${item.title}</a></h4>
-                            <p>${item.description.replace(/<[^>]*>/g, '').substring(0, 80)}...</p>
-                            <div class="meta">
-                                <span><i class="far fa-clock"></i> ${new Date(item.pubDate).toLocaleDateString('pl-PL')}</span>
-                            </div>
+                    <!-- قائمة اللغات - تعديل 4 -->
+                    <div class="lang-dropdown" id="langDropdown">
+                        <div class="lang-switch">
+                            <i class="fas fa-globe"></i> <span id="currentLang">PL</span> <i class="fas fa-chevron-down"></i>
                         </div>
-                    `;
-                    newsGrid.appendChild(newsItem);
-                });
-                
-                // Wypełnienie sekcji kategorii
-                const categories = {
-                    polska: items.filter(item => !item.title.toLowerCase().includes('sport') && !item.title.toLowerCase().includes('technologia')),
-                    swiat: items.filter(item => item.title.toLowerCase().includes('świat') || item.title.toLowerCase().includes('usa') || item.title.toLowerCase().includes('niemcy') || item.title.toLowerCase().includes('rosja')),
-                    gospodarka: items.filter(item => item.title.toLowerCase().includes('gospodarka') || item.title.toLowerCase().includes('budżet') || item.title.toLowerCase().includes('inflacja')),
-                    sport: items.filter(item => item.title.toLowerCase().includes('sport') || item.title.toLowerCase().includes('mecz') || item.title.toLowerCase().includes('piłka')),
-                    technologia: items.filter(item => item.title.toLowerCase().includes('technologia') || item.title.toLowerCase().includes('ai') || item.title.toLowerCase().includes('cyber'))
-                };
-                
-                // Dla każdej kategorii wyświetlamy pierwsze 3 artykuły
-                for (let [catId, catItems] of Object.entries(categories)) {
-                    const container = document.getElementById(`${catId}News`);
-                    if (container && catItems.length > 0) {
-                        container.innerHTML = '';
-                        catItems.slice(0, 3).forEach(item => {
-                            const newsItem = document.createElement('div');
-                            newsItem.className = 'news-item';
-                            newsItem.innerHTML = `
-                                <img src="${item.thumbnail || 'https://images.unsplash.com/photo-1566378246598-5b11a0d486cc?w=600'}" alt="News" onerror="this.src='https://images.unsplash.com/photo-1566378246598-5b11a0d486cc?w=600'">
-                                <div class="news-item-content">
-                                    <h4><a href="${item.link}" target="_blank">${item.title}</a></h4>
-                                    <p>${item.description.replace(/<[^>]*>/g, '').substring(0, 60)}...</p>
-                                </div>
-                            `;
-                            container.appendChild(newsItem);
-                        });
-                    }
-                }
-                
-            } catch (error) {
-                console.error('Błąd pobierania wiadomości:', error);
-                document.getElementById('newsGrid').innerHTML = '<div class="error-message">Nie udało się pobrać wiadomości. Odśwież stronę za chwilę.</div>';
-            }
-        }
-
-        // Wywołaj funkcję pobierania po załadowaniu strony
-        fetchNews();
-        
-        // Odświeżaj wiadomości co 30 minut
-        setInterval(fetchNews, 30 * 60 * 1000);
-    </script>
-</body>
-</html>            align-items: center;
-        }
-        .breaking-news {
-            background-color: #fff;
-            color: #dc1c1c;
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-right: 15px;
-        }
-        .breaking-ticker {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        /* Nagłówek */
-        .header {
-            background-color: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 20px 0;
-        }
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .logo-area {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .logo h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: #dc1c1c;
-            letter-spacing: -1px;
-        }
-        .logo span {
-            color: #333;
-            font-size: 1rem;
-            font-weight: 400;
-            display: block;
-        }
-        .date-lang {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-        .current-date {
-            background: #f0f0f0;
-            padding: 6px 15px;
-            border-radius: 30px;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        .lang-switch {
-            background: #dc1c1c;
-            color: white;
-            padding: 6px 15px;
-            border-radius: 30px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: default;
-        }
-        /* Nawigacja */
-        .nav-menu {
-            background-color: #333;
-            margin-top: 20px;
-            border-radius: 50px;
-            overflow: hidden;
-        }
-        .nav-menu ul {
-            display: flex;
-            list-style: none;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        .nav-menu ul li a {
-            display: block;
-            padding: 14px 25px;
-            color: white;
-            text-decoration: none;
-            font-weight: 600;
-            transition: 0.3s;
-        }
-        .nav-menu ul li a:hover,
-        .nav-menu ul li a.active {
-            background-color: #dc1c1c;
-        }
-        /* Główna sekcja */
-        .main-news {
-            margin: 30px 0;
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 25px;
-        }
-        .featured-article {
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-        }
-        .featured-article img {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-        }
-        .featured-content {
-            padding: 25px;
-        }
-        .category-tag {
-            background: #dc1c1c;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            display: inline-block;
-            margin-bottom: 15px;
-        }
-        .featured-content h2 {
-            font-size: 2rem;
-            margin-bottom: 15px;
-            line-height: 1.3;
-        }
-        .featured-content h2 a {
-            text-decoration: none;
-            color: inherit;
-        }
-        .featured-content p {
-            color: #555;
-            margin-bottom: 20px;
-        }
-        .meta {
-            display: flex;
-            gap: 20px;
-            color: #888;
-            font-size: 14px;
-            border-top: 1px solid #eee;
-            padding-top: 15px;
-        }
-        .meta i {
-            margin-right: 5px;
-            color: #dc1c1c;
-        }
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
-        .sidebar-card {
-            background: white;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-        }
-        .sidebar-card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 20px;
-            position: relative;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #dc1c1c;
-        }
-        .trending-list {
-            list-style: none;
-        }
-        .trending-list li {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        .trending-list li span {
-            background: #f0f0f0;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: #dc1c1c;
-        }
-        /* Siatka artykułów */
-        .news-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-            margin: 20px 0;
-        }
-        .news-item {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-            transition: transform 0.3s;
-        }
-        .news-item:hover {
-            transform: translateY(-5px);
-        }
-        .news-item img {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-        }
-        .news-item-content {
-            padding: 20px;
-        }
-        .news-item h4 {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-        }
-        .news-item h4 a {
-            text-decoration: none;
-            color: #222;
-            transition: color 0.2s;
-        }
-        .news-item h4 a:hover {
-            color: #dc1c1c;
-        }
-        .news-item p {
-            color: #555;
-            font-size: 0.95rem;
-            margin-bottom: 10px;
-        }
-        .news-item .meta {
-            border: none;
-            padding: 0;
-            margin-top: 10px;
-        }
-        /* Sekcje kategorii */
-        .category-section {
-            margin-top: 50px;
-        }
-        .section-title {
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            border-bottom: 3px solid #dc1c1c;
-            padding-bottom: 10px;
-        }
-        /* Stopka */
-        .footer {
-            background-color: #222;
-            color: #bbb;
-            padding: 50px 0 20px;
-            margin-top: 50px;
-        }
-        .footer-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-        .footer h4 {
-            color: white;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-        }
-        .footer ul {
-            list-style: none;
-        }
-        .footer ul li {
-            margin-bottom: 10px;
-        }
-        .footer ul li a {
-            color: #bbb;
-            text-decoration: none;
-            transition: 0.3s;
-        }
-        .footer ul li a:hover {
-            color: #dc1c1c;
-        }
-        .copyright {
-            text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid #444;
-            font-size: 14px;
-        }
-        /* Responsywność */
-        @media (max-width: 768px) {
-            .main-news {
-                grid-template-columns: 1fr;
-            }
-            .nav-menu ul li a {
-                padding: 10px 15px;
-            }
-            .logo-area {
-                flex-direction: column;
-                gap: 15px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Górny pasek z tickerem -->
-    <div class="top-bar">
-        <div class="container">
-            <div style="display: flex; align-items: center;">
-                <span class="breaking-news"><i class="fas fa-bolt"></i> Na żywo</span>
-                <div class="breaking-ticker" id="ticker">
-                    ⚡ Marszałek Sejmu z wizytą w Kijowie • ⚡ Prezydent podpisał ustawę o pomocy dla obywateli Ukrainy • ⚡ Polska bojkotuje ceremonię otwarcia Paralimpiady
-                </div>
-            </div>
-            <div>
-                <i class="fas fa-cloud-sun"></i> Warszawa 3°C
-            </div>
-        </div>
-    </div>
-
-    <!-- Nagłówek -->
-    <div class="header">
-        <div class="container">
-            <div class="logo-area">
-                <div class="logo">
-                    <h1>Polska<span style="color: #dc1c1c;">24</span></h1>
-                    <span>niezależny portal informacyjny</span>
-                </div>
-                <div class="date-lang">
-                    <div class="current-date" id="currentDate"></div>
-                    <div class="lang-switch"><i class="fas fa-globe"></i> PL</div>
+                        <ul class="lang-menu">
+                            <li><a href="#" data-lang="pl">Polski</a></li>
+                            <li><a href="#" data-lang="en">English</a></li>
+                            <li><a href="#" data-lang="uk">Українська</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <nav class="nav-menu">
                 <ul>
-                    <li><a href="#main" class="active">Strona główna</a></li>
-                    <li><a href="#polska">Polska</a></li>
-                    <li><a href="#swiat">Świat</a></li>
-                    <li><a href="#gospodarka">Gospodarka</a></li>
-                    <li><a href="#sport">Sport</a></li>
-                    <li><a href="#technologia">Technologia</a></li>
-                    <li><a href="#kultura">Kultura</a></li>
+                    <li><a href="#main" class="active" data-i18n="home">Strona główna</a></li>
+                    <li><a href="#polska" data-i18n="poland">Polska</a></li>
+                    <li><a href="#swiat" data-i18n="world">Świat</a></li>
+                    <li><a href="#gospodarka" data-i18n="economy">Gospodarka</a></li>
+                    <li><a href="#sport" data-i18n="sport">Sport</a></li>
+                    <li><a href="#technologia" data-i18n="tech">Technologia</a></li>
                 </ul>
             </nav>
         </div>
     </div>
 
-    <!-- Główna zawartość -->
+    <!-- المحتوى الرئيسي -->
     <div class="container" id="main">
-        <!-- Artykuł główny i sidebar -->
+        <!-- القسم الرئيسي والخبر الأول -->
         <div class="main-news">
             <div class="featured-article">
-                <img src="https://images.unsplash.com/photo-1566378246598-5b11a0d486cc?w=1200&auto=format" alt="Polska flaga">
+                <img src="https://images.unsplash.com/photo-1566378246598-5b11a0d486cc?w=1200&auto=format" alt="Polska flaga" loading="lazy">
                 <div class="featured-content">
-                    <span class="category-tag">Gorący temat</span>
-                    <h2><a href="#polska">Marszałek Sejmu Włodzimierz Czarzasty z wizytą w Kijowie</a></h2>
-                    <p>Marszałek Sejmu Włodzimierz Czarzasty przybył z pierwszą wizytą do Kijowa, gdzie spotkał się z przewodniczącym Rady Najwyższej Rusłanem Stefańczukiem. W swoim wystąpieniu podkreślił pełne wsparcie Polski dla suwerenności Ukrainy, jej europejskiej przyszłości oraz konieczność utrzymania presji na Rosję. To wydarzenie ma znaczenie polityczne i symboliczne w kontekście zbliżającej się trzeciej rocznicy pełnoskalowej inwazji [citation:1][citation:6].</p>
-                    <div class="meta">
-                        <span><i class="far fa-clock"></i> 2 godziny temu</span>
-                        <span><i class="far fa-user"></i> Tomasz Wróblewski</span>
-                        <span><i class="far fa-comment"></i> 53 komentarze</span>
-                    </div>
-                </div>
-            </div>
-            <div class="sidebar">
-                <div class="sidebar-card">
-                    <h3><i class="fas fa-fire" style="color:#dc1c1c;"></i> Popularne</h3>
-                    <ul class="trending-list">
-                        <li><span>1</span> Prezydent podpisał ustawę ws. pomocy dla Ukraińców</li>
-                        <li><span>2</span> Polska bojkotuje ceremonię otwarcia Paralimpiady</li>
-                        <li><span>3</span> Incydenty z balonami na granicy z Białorusią</li>
-                        <li><span>4</span> Prezydent Nawrocki popiera program nuklearny</li>
-                        <li><span>5</span> Pomoc polskich generatorów dla Ukrainy</li>
-                    </ul>
-                </div>
-                <div class="sidebar-card">
-                    <h3><i class="fas fa-newspaper"></i> Reklama</h3>
-                    <img src="https://via.placeholder.com/300x200/red/white?text=Twoja+reklama+tutaj" style="width:100%; border-radius:10px;">
-                </div>
-            </div>
-        </div>
-
-        <!-- Sekcja najnowsze -->
-        <h2 class="section-title">Najnowsze wiadomości <i class="fas fa-arrow-right" style="color:#dc1c1c;"></i></h2>
-        <div class="news-grid">
-            <!-- Artykuł 1 -->
-            <div class="news-item">
-                <img src="https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=600&auto=format" alt="Sejm">
-                <div class="news-item-content">
-                    <span class="category-tag" style="background:#333;">Polityka</span>
-                    <h4><a href="#polska">Prezydent Nawrocki podpisał ustawę kończącą specjalne świadczenia dla Ukraińców</a></h4>
-                    <p>Prezydent Karol Nawrocki podpisał ustawę, która kończy specjalny system pomocy dla obywateli Ukrainy, przenosząc go na ogólne zasady ochrony cudzoziemców. Nowe przepisy zachowują kluczowe zabezpieczenia, ale wprowadzają 30-dniowy termin na uzyskanie numeru PESEL [citation:4].</p>
-                    <div class="meta">
-                        <span><i class="far fa-clock"></i> 3h temu</span>
-                    </div>
-                </div>
-            </div>
-            <!-- Artykuł 2 -->
-            <div class="news-item">
-                <img src="https://images.unsplash.com/photo-1534158914593-0623-5363cbf1c2af?w=600&auto=format" alt="Ekonomia">
-                <div class="news-item-content">
-                    <span class="category-tag" style="background:#333;">Gospodarka</span>
-                    <h4><a href="#gospodarka">Polska przekaże Ukrainie 379 generatorów i 18 nagrzewnic</a></h4>
-                    <p>Rządowa Agencja Rezerw Strategicznych (RARS) przekazała Ukrainie 379 generatorów i 18 nagrzewnic w odpowiedzi na kryzys energetyczny spowodowany rosyjskimi atakami. Pierwsza partia 230 generatorów dotarła już na Ukrainę [citation:2].</p>
-                    <div class="meta">
-                        <span><i class="far fa-clock"></i> 5h temu</span>
-                    </div>
-                </div>
-            </div>
-            <!-- Artykuł 3 -->
-            <div class="news-item">
-                <img src="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=600&auto=format" alt="Sport">
-                <div class="news-item-content">
-                    <span class="category-tag" style="background:#333;">Sport</span>
-                    <h4><a href="#sport">Polska bojkotuje ceremonię otwarcia Paralimpiady w obecności flag rosyjskich</a></h4>
-                    <p>Ministerstwo Sportu ogłosiło bojkot ceremonii otwarcia Zimowych Igrzysk Paralimpijskich we Włoszech w proteście przeciwko dopuszczeniu rosyjskich i białoruskich sportowców z ich flagami narodowymi. Szef Polskiego Komitetu Paralimpijskiego nazwał decyzję IPC "skandaliczną" [citation:3].</p>
-                    <div class="meta">
-                        <span><i class="far fa-clock"></i> 7h temu</span>
-                    </div>
-                </div>
-            </div>
-            <!-- Artykuł 4 -->
-            <div class="news-item">
-                <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&auto=format" alt="Technologia">
-                <div class="news-item-content">
-                    <span class="category-tag" style="background:#333;">Bezpieczeństwo</span>
-                    <h4><a href="#technologia">Prezydent Nawrocki popiera wzmocnienie bezpieczeństwa "w oparciu o potencjał nuklearny"</a></h4>
-                    <p>Prezydent Karol Nawrocki w wywiadzie dla Polsat News wyraził poparcie dla budowy bezpieczeństwa Polski "w oparciu o potencjał nuklearny". Podkreślił, że Polska jest krajem na skraju konfliktu zbrojnego, a rosyjska postawa jest agresywna [citation:8].</p>
-                    <div class="meta">
-                        <span><i class="far fa-clock"></i> 9h temu</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Sekcja Polska -->
-        <section id="polska" class="category-section">
-            <h2 class="section-title">🇵🇱 Z Polski</h2>
-            <div class="news-grid">
-                <div class="news-item">
-                    <img src="https://images.unsplash.com/photo-1566378246598-5b11a0d486cc?w=600" alt="Polska">
-                    <div class="news-item-content">
-                        <h4><a href="#polska">Prezydent wetuje ustawę o języku śląskim</a></h4>
-                        <p>Prezydent Karol Nawrocki zawetował ustawę o uznaniu języka śląskiego za język regionalny, argumentując, że decyzje naukowe nie powinny być podejmowane większością polityczną [citation:7].</p>
-                    </div>
-                </div>
-                <div class="news-item">
-                    <img src="https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=600" alt="Sejm">
-                    <div class="news-item-content">
-                        <h4><a href="#polska">Incydenty z balonami na granicy polsko-białoruskiej</a></h4>
-                        <p>Balony wykorzystywane do przemytu papierosów po raz trzeci z rzędu naruszyły polską przestrzeń powietrzną. Wojsko określa te zdarzenia jako "incydenty hybrydowe" mające na celu testowanie systemów obrony [citation:9].</p>
-                    </div>
-                </div>
-                <div class="news-item">
-                    <img src="https://images.unsplash.com/photo-1577086664693-894d8405334a?w=600" alt="Wybory">
-                    <div class="news-item-content">
-                        <h4><a href="#polska">Polska gotowa pomóc w organizacji wyborów na Ukrainie</a></h4>
-                        <p>Marszałek Sejmu Włodzimierz Czarzasty zadeklarował gotowość Polski do zapewnienia kompleksowego wsparcia przy organizacji przyszłych wyborów na Ukrainie, w tym pomocy logistycznej i prawnej [citation:6].</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Sekcja Świat -->
-        <section id="swiat" class="category-section">
-            <h2 class="section-title">🌍 Ze świata</h2>
-            <div class="news-grid">
-                <div class="news-item">
-                    <img src="https://images.unsplash.com/photo-1447069387593-a5de0862481e?w=600" alt="USA">
-                    <div class="news-item-content">
-                        <h4><a href="#swiat">Media polskie o rosyjskich atakach na Ukrainę</a></h4>
-                        <p>"Ciemność i mroźny chłód" - polskie media opisują sytuację w Ukrainie po rosyjskich atakach na infrastrukturę energetyczną. Eksperci ostrzegają, że problemy ukraińskiej sieci mogą wpłynąć na całą Europę Wschodnią [citation:2].</p>
-                    </div>
-                </div>
-                <div class="news-item">
-             
+                    <sp
